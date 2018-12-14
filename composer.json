@@ -1,0 +1,19 @@
+{
+    "name": "yosmy/mongo",
+    "description": "",
+    "require": {
+        "php": ">=7.2",
+        "ext-mongodb": "*",
+        "ext-json": "*",
+        "mongodb/mongodb": "~1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Yosmy\\Mongo\\": [
+                "src"
+            ]
+        }
+    },
+    "prefer-stable": true,
+    "minimum-stability": "dev"
+}

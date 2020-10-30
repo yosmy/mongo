@@ -10,7 +10,7 @@ class DuplicatedKeyException extends Exception implements JsonSerializable
     /**
      * {@inheritDoc}
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return [
             'message' => $this->getMessage()

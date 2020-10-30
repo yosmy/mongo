@@ -25,7 +25,7 @@ class RegisterChanges
     /**
      * @return string[]
      */
-    public function all()
+    public function all(): array
     {
         $keys = array_keys($this->changes);
 

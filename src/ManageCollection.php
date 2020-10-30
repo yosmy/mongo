@@ -2,64 +2,19 @@
 
 namespace Yosmy\Mongo;
 
-use MongoDB\Client;
-use MongoDB\Collection;
-use MongoDB\DeleteResult;
-use MongoDB\Driver\Cursor;
-use MongoDB\Driver\Exception\BulkWriteException;
-use MongoDB\InsertManyResult;
-use MongoDB\InsertOneResult;
-use MongoDB\UpdateResult;
 use Traversable;
-use LogicException;
 
-/**
- * @di\service({
- *     private: true
- * })
- */
-class ManageCollection
+interface ManageCollection
 {
-    /**
-     * @var Collection
-     */
-    private $collection;
-
-    /**
-     * @param string $uri
-     * @param string $db
-     * @param string $collection
-     * @param array  $options
-     */
-    public function __construct(
-        string $uri,
-        string $db,
-        string $collection,
-        array $options
-    ) {
-        $this->collection = (new Client($uri))
-            ->selectCollection(
-                $db,
-                $collection,
-                $options
-            );
-    }
-
     /**
      * @return string
      */
-    public function getName()
-    {
-        return $this->collection->getCollectionName();
-    }
+    public function getName(): string;
 
     /**
      * @return array
      */
-    public function getTypeMap()
-    {
-        return $this->collection->getTypeMap();
-    }
+    public function getTypeMap(): array;
 
     /**
      * @param array|object $key
@@ -67,21 +22,15 @@ class ManageCollection
      *
      * @return string
      */
-    public function createIndex($key, array $options = [])
-    {
-        return $this->collection->createIndex($key, $options);
-    }
+    public function createIndex($key, array $options = []): string;
 
     /**
      * @param array|object $filter
      * @param array        $options
      *
-     * @return Cursor
+     * @return Collection
      */
-    public function find($filter = [], array $options = [])
-    {
-        return $this->collection->find($filter, $options);
-    }
+    public function find($filter = [], array $options = []): Collection;
 
     /**
      * @param array|object $filter
@@ -89,10 +38,7 @@ class ManageCollection
      *
      * @return array|object|null
      */
-    public function findOne($filter = [], array $options = [])
-    {
-        return $this->collection->findOne($filter, $options);
-    }
+    public function findOne($filter = [], array $options = []);
 
     /**
      * @param array|object $filter
@@ -100,10 +46,7 @@ class ManageCollection
      *
      * @return integer
      */
-    public function count($filter = [], array $options = [])
-    {
-        return $this->collection->countDocuments($filter, $options);
-    }
+    public function count($filter = [], array $options = []): int;
 
     /**
      * @param array $pipeline
@@ -111,10 +54,7 @@ class ManageCollection
      *
      * @return Traversable
      */
-    public function aggregate(array $pipeline, array $options = [])
-    {
-        return $this->collection->aggregate($pipeline, $options);
-    }
+    public function aggregate(array $pipeline, array $options = []): Traversable;
 
     /**
      * @param array|object $document
@@ -122,14 +62,7 @@ class ManageCollection
      *
      * @return InsertOneResult
      */
-    public function insertOne($document, array $options = [])
-    {
-        try {
-            return $this->collection->insertOne($document, $options);
-        } catch (BulkWriteException $e) {
-            throw new LogicException($e->getMessage(), $e->getCode(), $e);
-        }
-    }
+    public function insertOne($document, array $options = []): InsertOneResult;
 
     /**
      * @param array|object $document
@@ -139,14 +72,7 @@ class ManageCollection
      *
      * @throws DuplicatedKeyException
      */
-    public function insertOneUnique($document, array $options = [])
-    {
-        try {
-            return $this->collection->insertOne($document, $options);
-        } catch (BulkWriteException $e) {
-            throw new DuplicatedKeyException();
-        }
-    }
+    public function insertOneUnique($document, array $options = []): InsertOneResult;
 
     /**
      * @param array[]|object[] $documents
@@ -154,10 +80,7 @@ class ManageCollection
      *
      * @return InsertManyResult
      */
-    public function insertMany(array $documents, array $options = [])
-    {
-        return $this->collection->insertMany($documents, $options);
-    }
+    public function insertMany(array $documents, array $options = []): InsertManyResult;
 
     /**
      * @param array|object $filter
@@ -166,10 +89,7 @@ class ManageCollection
      *
      * @return UpdateResult
      */
-    public function updateMany($filter, $update, array $options = [])
-    {
-        return $this->collection->updateMany($filter, $update, $options);
-    }
+    public function updateMany($filter, $update, array $options = []): UpdateResult;
 
     /**
      * @param array|object $filter
@@ -178,10 +98,7 @@ class ManageCollection
      *
      * @return UpdateResult
      */
-    public function updateOne($filter, $update, array $options = [])
-    {
-        return $this->collection->updateOne($filter, $update, $options);
-    }
+    public function updateOne($filter, $update, array $options = []): UpdateResult;
 
     /**
      * @param array|object $filter
@@ -189,10 +106,7 @@ class ManageCollection
      *
      * @return DeleteResult
      */
-    public function deleteOne($filter, array $options = [])
-    {
-        return $this->collection->deleteOne($filter, $options);
-    }
+    public function deleteOne($filter, array $options = []): DeleteResult;
 
     /**
      * @param array|object $filter
@@ -200,10 +114,7 @@ class ManageCollection
      *
      * @return DeleteResult
      */
-    public function deleteMany($filter, array $options = [])
-    {
-        return $this->collection->deleteMany($filter, $options);
-    }
+    public function deleteMany($filter, array $options = []): DeleteResult;
 
     /**
      * @param string $name
@@ -212,37 +123,12 @@ class ManageCollection
     public function uploadFile(
         string $name,
         string $content
-    ) {
-        $bucket = (new Client)
-            ->selectDatabase(
-                $this->collection->getDatabaseName()
-            )
-            ->selectGridFSBucket([
-                'bucketName' => 'yosmy_avatar'
-            ]);
-
-        $stream = $bucket->openUploadStream($name);
-
-        fwrite($stream, $content);
-
-        fclose($stream);
-    }
+    );
 
     /**
      * @param array $options
      *
      * @return array|object
      */
-    public function drop(array $options = [])
-    {
-        if (!$options) {
-            $options = [
-                'typeMap' => [
-                    'root' => 'array',
-                ],
-            ];
-        }
-
-        return $this->collection->drop($options);
-    }
+    public function drop(array $options = []);
 }

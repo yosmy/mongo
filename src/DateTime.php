@@ -44,24 +44,24 @@ class DateTime implements Persistable, UTCDateTimeInterface, JsonSerializable
     /**
      * {@inheritDoc}
      */
-    public function toDateTime()
+    public function toDateTime(): \DateTime
     {
         return $this->utc->toDateTime();
     }
 
     /**
-     * @return string
+     * {@inheritDoc}
      */
-    public function jsonSerialize()
+    public function __toString(): string
     {
-        return $this->utc->toDateTime()->getTimestamp();
+        return $this->utc->__toString();
     }
 
     /**
      * {@inheritDoc}
      */
-    public function __toString()
+    public function jsonSerialize()
     {
-        return $this->utc->__toString();
+        return $this->utc->jsonSerialize();
     }
 }

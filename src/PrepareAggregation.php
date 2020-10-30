@@ -18,11 +18,11 @@ class PrepareAggregation
     const GROUP_BY_YEAR = 'by-year';
 
     /**
-     * @param int    $lower
-     * @param int    $greater
-     * @param string $timezone
-     * @param string $group
-     * @param array  $response
+     * @param int|null $lower
+     * @param int|null $greater
+     * @param string   $timezone
+     * @param string   $group
+     * @param array    $response
      *
      * @return array
      */
@@ -32,7 +32,7 @@ class PrepareAggregation
         string $timezone,
         string $group,
         array $response
-    ) {
+    ): array {
         switch ($group) {
             case self::GROUP_BY_DAY:
                 $stats = $this->initializeByDay($response, $lower, $greater, $timezone);
@@ -58,10 +58,10 @@ class PrepareAggregation
     }
 
     /**
-     * @param array  $response
-     * @param int    $from
-     * @param int    $to
-     * @param string $timezone
+     * @param array    $response
+     * @param int|null $from
+     * @param int|null $to
+     * @param string   $timezone
      *
      * @return array
      */
@@ -70,7 +70,7 @@ class PrepareAggregation
         ?int $from, 
         ?int $to,
         string $timezone
-    ) {
+    ): array {
         /* Find lower and greater dates */
 
         $lower = new DateTime();
@@ -126,8 +126,10 @@ class PrepareAggregation
      *
      * @return array
      */
-    private function fillByDay($response, $stats)
-    {
+    private function fillByDay(
+        array $response,
+        array $stats
+    ): array {
         foreach ($response as $item) {
             $id = $item['_id'];
             unset($item['_id']);
@@ -143,7 +145,7 @@ class PrepareAggregation
      *
      * @return array
      */
-    private function flatByDay(array $stats)
+    private function flatByDay(array $stats): array
     {
         $flat = [];
         foreach ($stats as $year => $months) {
@@ -162,10 +164,10 @@ class PrepareAggregation
     }
 
     /**
-     * @param array $response
-     * @param int   $from
-     * @param int   $to
-     * @param string $timezone
+     * @param array    $response
+     * @param int|null $from
+     * @param int|null $to
+     * @param string   $timezone
      *
      * @return array
      */
@@ -174,7 +176,7 @@ class PrepareAggregation
         ?int $from,
         ?int $to,
         string $timezone
-    ) {
+    ): array {
         /* Find lower and greater dates */
 
         $lower = new DateTime();
@@ -230,8 +232,10 @@ class PrepareAggregation
      *
      * @return array
      */
-    private function fillByMonth($response, $stats)
-    {
+    private function fillByMonth(
+        array $response,
+        array $stats
+    ): array {
         foreach ($response as $item) {
             $id = $item['_id'];
             unset($item['_id']);
@@ -246,7 +250,7 @@ class PrepareAggregation
      * @param array $stats
      * @return array
      */
-    private function flatByMonth(array $stats)
+    private function flatByMonth(array $stats): array
     {
         $flat = [];
         foreach ($stats as $year => $months) {

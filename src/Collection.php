@@ -9,7 +9,7 @@ use Traversable;
 use Exception;
 use LogicException;
 
-class Cursor implements IteratorAggregate, JsonSerializable
+class Collection implements IteratorAggregate, JsonSerializable
 {
     /**
      * @var JsonSerializable[]
@@ -45,9 +45,18 @@ class Cursor implements IteratorAggregate, JsonSerializable
     }
 
     /**
+     * @param array $typemap
+     */
+    public function setTypeMap(
+        array $typemap
+    ) {
+        $this->cursor->setTypeMap($typemap);
+    }
+
+    /**
      * @return array
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         $items = [];
         foreach ($this->cursor as $item) {
